@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import User from "../models/user.model.js";
 
 const authMiddleware = asyncHandler(async (req, res, next) => {
-  // Read token from header: Authorization: Bearer <token>
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -12,17 +12,24 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
 
   const token = authHeader.split(" ")[1];
 
+  let decoded;
   try {
-    // Verify token
-    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-
-    // Attach user info to request
-    req.user = decoded;
-
-    next();
+    decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
   } catch (err) {
     throw new ApiError(401, "Unauthorized: Invalid token");
   }
+
+  // Fetch fresh user from DB
+  const user = await User.findById(decoded._id).select("-password -refreshToken");
+
+  if (!user) {
+    throw new ApiError(401, "Unauthorized: User not found");
+  }
+
+  //  Attach full user document
+  req.user = user;
+
+  next();
 });
 
 export default authMiddleware;

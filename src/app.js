@@ -6,8 +6,11 @@ import helmet from "helmet";
 import errorMiddleware from "./middlewares/error.middleware.js";
 import userRoutes from "./routes/user.routes.js";
 
+import cartRoutes from "./routes/cart.routes.js";
+
 const app = express();
 
+app.use("/api/v1/cart", cartRoutes);
 // Security + parsing
 app.use(helmet());
 app.use(cors({
