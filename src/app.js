@@ -7,6 +7,7 @@ import errorMiddleware from "./middlewares/error.middleware.js";
 import userRoutes from "./routes/user.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
 import orderRoutes from "./routes/order.routes.js";
+import categoryRoutes from "./routes/category.routes.js";
 const app = express();
 
 
@@ -30,6 +31,7 @@ app.get("/health", (req, res) => {
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/orders", orderRoutes);
+app.use("/api/v1/categories", categoryRoutes);
 
 // Error middleware (ALWAYS LAST)
 app.use(errorMiddleware);
