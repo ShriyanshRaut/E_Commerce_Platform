@@ -27,3 +27,11 @@ export const createCategory = asyncHandler(async (req, res) => {
     .status(201)
     .json(new ApiResponse(201, category, "Category created successfully"));
 });
+
+export const getAllCategories = asyncHandler(async (req, res) => {
+  const categories = await Category.find().sort({ createdAt: -1 });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, categories, "Categories fetched successfully"));
+});
