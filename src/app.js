@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
+import morgan from "morgan";
 
 import errorMiddleware from "./middlewares/error.middleware.js";
 import userRoutes from "./routes/user.routes.js";
@@ -27,6 +28,10 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(cookieParser());
 
 
+// first request logging
+app.use(morgan("dev"));
+
+//  then protection
 app.use(rateLimiter);
 
 // Health check
