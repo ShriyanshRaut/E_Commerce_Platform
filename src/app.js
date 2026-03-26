@@ -10,6 +10,7 @@ import orderRoutes from "./routes/order.routes.js";
 import categoryRoutes from "./routes/category.routes.js";
 import productRoutes from "./routes/product.routes.js";
 import couponRoutes from "./routes/coupon.routes.js";
+import reviewRoutes from "./routes/review.routes.js";
 const app = express();
 
 
@@ -36,6 +37,7 @@ app.use("/api/v1/orders", orderRoutes);
 app.use("/api/v1/categories", categoryRoutes);
 app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/coupons", couponRoutes);
+app.use("/api/v1/reviews", reviewRoutes);
 // Error middleware (ALWAYS LAST)
 app.use(errorMiddleware);
 
