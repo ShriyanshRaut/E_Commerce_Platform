@@ -1,49 +1,36 @@
-# 🛒 Scalable E-commerce Backend
+🛒 Scalable E-commerce Backend
+A scalable, production-ready e-commerce backend system built with Node.js and Express, featuring authentication, caching, media uploads, and a clean service-layer architecture.
 
-A production-grade, scalable e-commerce REST API built with Node.js, Express, and MongoDB. Designed with clean architecture — services layer, validation, constants, and structured error handling from the ground up.
+🚀 Features
 
----
+JWT-based authentication (access + refresh tokens)
+Role-based access control (User / Admin)
+Product management with image uploads via Cloudinary
+Cart system with embedded MongoDB documents
+Order management with status tracking
+Review and rating system
+Coupon and discount system
+Category management
+Request validation with Zod
+Centralized error handling
+Rate limiting and security headers
+Winston logging + Morgan request logs
+⚡ Redis caching for performance optimization
 
-## 🚀 Features
 
-- JWT-based authentication (access + refresh tokens)
-- Role-based access control (User / Admin)
-- Product management with image uploads via Cloudinary
-- Cart system with embedded MongoDB documents
-- Order management with status tracking
-- Review and rating system
-- Coupon and discount system
-- Category management
-- Request validation with Zod
-- Structured error handling
-- Rate limiting and security headers
-- Winston logging + Morgan request logs
+🧠 Architecture Highlights
 
----
+Service-layer architecture for scalability
+Centralized error handling
+Redis caching for performance
+Middleware-driven request lifecycle
+Secure authentication & role-based access
 
-## 🛠️ Tech Stack
 
-| Technology | Purpose |
-|---|---|
-| Node.js | Runtime |
-| Express.js | Web framework |
-| MongoDB + Mongoose | Database & ODM |
-| JWT | Authentication |
-| Zod | Request validation |
-| Multer | File upload handling |
-| Cloudinary | Cloud media storage |
-| bcrypt | Password hashing |
-| Winston | Application logging |
-| Morgan | HTTP request logging |
-| Helmet | Security headers |
-| express-rate-limit | Rate limiting |
-| dotenv | Environment config |
+🛠️ Tech Stack
+TechnologyPurposeNode.jsRuntimeExpress.jsWeb frameworkMongoDB + MongooseDatabase & ODMRedisCaching layerJWTAuthenticationZodRequest validationMulterFile upload handlingCloudinaryCloud media storagebcryptPassword hashingWinstonApplication loggingMorganHTTP request loggingHelmetSecurity headersexpress-rate-limitRate limitingdotenvEnvironment config
 
----
-
-## 📁 Project Structure
-
-```
+📁 Project Structure
 src/
 ├── config/                   # External service configs
 │   ├── db.js
@@ -104,49 +91,31 @@ src/
 ├── app.js
 ├── constants.js
 └── index.js
-```
 
----
-
-## 🏗️ Architecture
-
-```
+🏗️ Architecture
 Request → Route → Middleware → Controller → Service → Model → DB
                                     ↓
                              ApiResponse({ success, message, data })
                                     ↓
                           error.middleware.js (global catch)
-```
-
-Cart schema uses **embedded documents** (MongoDB style) — no junction tables:
-```
+Cart schema uses embedded documents (MongoDB style) — no junction tables:
 cart → { userId, items: [{ productId, quantity }], totalPrice }
-```
 
----
+⚙️ Getting Started
+Prerequisites
 
-## ⚙️ Getting Started
+Node.js v18+
+MongoDB Atlas account
+Cloudinary account
+Redis instance
 
-### Prerequisites
-
-- Node.js v18+
-- MongoDB Atlas account
-- Cloudinary account
-
-### Installation
-
-```bash
-git clone https://github.com/ShriyanshRaut/Ecommerce-backend.git
+Installation
+bashgit clone https://github.com/ShriyanshRaut/Ecommerce-backend.git
 cd Ecommerce-backend
 npm install
-```
-
-### Environment Variables
-
-Create a `.env` file in the root:
-
-```env
-PORT=8000
+Environment Variables
+Create a .env file in the root:
+envPORT=8000
 CORS_ORIGIN=*
 MONGODB_URI=your_mongodb_connection_string
 
@@ -158,70 +127,38 @@ REFRESH_TOKEN_EXPIRY=10d
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
-```
 
-### Run the Server
+REDIS_URL=your_redis_url
+Run the Server
+bashnpm run dev
+Server starts on http://localhost:8000
 
-```bash
-npm run dev
-```
+📡 API Endpoints
+Auth — /api/v1/users
+MethodEndpointAuthDescriptionPOST/register❌Register userPOST/login❌LoginPOST/logout✅LogoutPOST/refresh-token❌Refresh access token
+Products — /api/v1/products
+MethodEndpointAuthDescriptionGET/❌Get all productsGET/:id❌Get single productPOST/✅ AdminCreate productPATCH/:id✅ AdminUpdate productDELETE/:id✅ AdminDelete product
+Cart — /api/v1/cart
+MethodEndpointAuthDescriptionGET/✅Get user cartPOST/✅Add item to cartPATCH/✅Update item quantityDELETE/:productId✅Remove itemDELETE/clear✅Clear cart
+Orders — /api/v1/orders
+MethodEndpointAuthDescriptionPOST/✅Create order from cartGET/✅Get user ordersGET/:id✅Get single orderPATCH/:id/status✅ AdminUpdate order status
 
-Server starts on `http://localhost:8000`
+🛡️ Security
 
----
+Helmet for HTTP security headers
+Rate limiting on all routes
+JWT httpOnly cookies
+Password hashing with bcrypt
+Input validation with Zod on every route
+Role-based middleware (user / admin)
 
-## 📡 API Endpoints
 
-### Auth — `/api/v1/users`
+📈 Project Status
+Phase 6: Backend Completed ✅
+Next: OAuth → Frontend → AI Integration → Deployment
 
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| POST | `/register` | ❌ | Register user |
-| POST | `/login` | ❌ | Login |
-| POST | `/logout` | ✅ | Logout |
-| POST | `/refresh-token` | ❌ | Refresh access token |
-
-### Products — `/api/v1/products`
-
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| GET | `/` | ❌ | Get all products |
-| GET | `/:id` | ❌ | Get single product |
-| POST | `/` | ✅ Admin | Create product |
-| PATCH | `/:id` | ✅ Admin | Update product |
-| DELETE | `/:id` | ✅ Admin | Delete product |
-
-### Cart — `/api/v1/cart`
-
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| GET | `/` | ✅ | Get user cart |
-| POST | `/` | ✅ | Add item to cart |
-| PATCH | `/` | ✅ | Update item quantity |
-| DELETE | `/:productId` | ✅ | Remove item |
-| DELETE | `/clear` | ✅ | Clear cart |
-
-### Orders — `/api/v1/orders`
-
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| POST | `/` | ✅ | Create order from cart |
-| GET | `/` | ✅ | Get user orders |
-| GET | `/:id` | ✅ | Get single order |
-| PATCH | `/:id/status` | ✅ Admin | Update order status |
-
----
-
-## 🛡️ Security
-
-- Helmet for HTTP security headers
-- Rate limiting on all routes
-- JWT httpOnly cookies
-- Password hashing with bcrypt
-- Input validation with Zod on every route
-- Role-based middleware (user / admin)
-
----
+📄 License
+This project is licensed under the ISC License.
 
 ## 📄 License
 
