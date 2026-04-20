@@ -1,8 +1,9 @@
 import dotenv from "dotenv";
-dotenv.config();
 
+// 🔥 FORCE LOAD ENV
+dotenv.config({ path: "../.env" });
 
-console.log(process.env.CLOUDINARY_CLOUD_NAME);
+console.log("🔑 KEY_ID:", process.env.RAZORPAY_KEY_ID);
 
 import { app } from "./app.js";
 import connectDB from "./config/db.js";
