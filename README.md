@@ -54,7 +54,7 @@ A scalable, production-ready full stack e-commerce platform built with React, No
 
 ```
 ┌─────────────┐        ┌──────────────────┐        ┌─────────────┐
-│   React UI  │ ──────▶│  Express Backend  │ ──────▶│  MongoDB    │
+│   React UI  │ ──────▶│  Express Backend │ ──────▶│  MongoDB    │
 └─────────────┘        └──────────────────┘        └─────────────┘
        │                        │
        │                        ├──────────────────▶ Redis (cache)
