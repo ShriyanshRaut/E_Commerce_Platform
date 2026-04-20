@@ -8,6 +8,29 @@ import product6 from "@/assets/product-6.jpg";
 
 const API_BASE_URL = "http://localhost:8000/api/v1";
 
+/**
+ * Backend response shape
+ */
+type ApiResponse<T> = {
+  success: boolean;
+  data: T;
+};
+
+/**
+ * Backend product shape
+ */
+type BackendProduct = {
+  _id: string;
+  name: string;
+  price: number;
+  images?: string[];
+  category?: string;
+  description?: string;
+};
+
+/**
+ * Mock fallback
+ */
 const MOCK_PRODUCTS: Product[] = [
   {
     id: "1",
@@ -59,24 +82,65 @@ const MOCK_PRODUCTS: Product[] = [
   },
 ];
 
-async function safeFetch<T>(path: string, fallback: T): Promise<T> {
+/**
+ * Safe fetch with timeout + proper typing
+ */
+async function safeFetch<T>(path: string): Promise<T> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 2000);
+
   try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 1500);
-    const res = await fetch(`${API_BASE_URL}${path}`, { signal: controller.signal });
+    const res = await fetch(`${API_BASE_URL}${path}`, {
+      signal: controller.signal,
+    });
+
     clearTimeout(timeout);
-    if (!res.ok) throw new Error(`API error ${res.status}`);
-    return (await res.json()) as T;
-  } catch {
-    // Graceful fallback to mock data when API is unavailable
-    return fallback;
+
+    if (!res.ok) {
+      throw new Error(`API error ${res.status}`);
+    }
+
+    const json: ApiResponse<T> = await res.json();
+
+    if (!json.success) {
+      throw new Error("API responded with success=false");
+    }
+
+    return json.data;
+  } catch (err) {
+    clearTimeout(timeout);
+    throw err;
   }
 }
 
+/**
+ * Transform backend → frontend
+ */
+function transformProduct(p: BackendProduct): Product {
+  return {
+    id: p._id, // 🔥 CRITICAL: this must be Mongo _id
+    name: p.name,
+    price: p.price,
+    image: p.images?.[0] || product1,
+    category: p.category || "General",
+    description: p.description || "",
+  };
+}
+
+/**
+ * Product service
+ */
 export const productService = {
   async getProducts(): Promise<Product[]> {
-    // Simulate network latency for skeletons
-    await new Promise((r) => setTimeout(r, 600));
-    return safeFetch<Product[]>("/products", MOCK_PRODUCTS);
+    try {
+      await new Promise((r) => setTimeout(r, 600)); // UX smoothness
+
+      const data = await safeFetch<BackendProduct[]>("/products");
+
+      return data.map(transformProduct);
+    } catch (err) {
+      console.warn("⚠️ API failed, using mock data:", err);
+      return MOCK_PRODUCTS;
+    }
   },
 };
