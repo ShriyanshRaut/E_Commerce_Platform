@@ -5,6 +5,9 @@ import type { Product } from "@/types";
 import { useCart } from "@/context/CartContext";
 import { toast } from "sonner";
 import { formatINR } from "@/lib/currency";
+import StarRating from "@/components/StarRating";
+import { getRatingFor } from "@/lib/reviews";
+import { useEffect, useState } from "react";
 
 export default function ProductCard({
   product,
@@ -15,12 +18,46 @@ export default function ProductCard({
 }) {
   const { addItem } = useCart();
 
+  // ⭐ rating state
+  const [ratingData, setRatingData] = useState<{
+    rating: number;
+    count: number;
+  }>({
+    rating: 0,
+    count: 0,
+  });
+
+  const [loadingRating, setLoadingRating] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadRating = async () => {
+      try {
+        const res = await getRatingFor(product.id);
+
+        if (mounted) {
+          setRatingData(res);
+        }
+      } catch (err) {
+        console.error("Rating fetch failed", err);
+      } finally {
+        if (mounted) setLoadingRating(false);
+      }
+    };
+
+    loadRating();
+
+    return () => {
+      mounted = false; // 🛑 prevent state update after unmount
+    };
+  }, [product.id]);
+
   const handleAdd = async () => {
     try {
-      // ✅ normalize ID properly (no any)
       const normalizedProduct: Product = {
         ...product,
-        id: product.id, // safe fallback
+        id: product.id,
       };
 
       await addItem(normalizedProduct);
@@ -46,7 +83,7 @@ export default function ProductCard({
       whileHover={{ y: -6 }}
       className="group relative"
     >
-      {/* Glow effect */}
+      {/* Glow */}
       <div className="absolute -inset-px rounded-3xl bg-gradient-primary opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-30" />
 
       <div className="relative overflow-hidden rounded-3xl border border-white/5 bg-gradient-card shadow-card backdrop-blur-xl transition-all duration-500 group-hover:border-primary/30 group-hover:shadow-elegant">
@@ -80,6 +117,17 @@ export default function ProductCard({
               <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">
                 {product.description}
               </p>
+
+              {/* ⭐ STARS */}
+              {!loadingRating && ratingData.count > 0 && (
+                <div className="mt-2">
+                  <StarRating
+                    rating={ratingData.rating}
+                    showNumber
+                    count={ratingData.count}
+                  />
+                </div>
+              )}
             </div>
 
             <p className="shrink-0 text-base font-semibold">

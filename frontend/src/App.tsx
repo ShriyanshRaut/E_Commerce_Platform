@@ -11,10 +11,11 @@ import { CartProvider } from "@/context/CartContext";
 import Navbar from "@/components/Navbar";
 import CursorGlow from "@/components/CursorGlow";
 
-// ⚠️ REMOVE .tsx EXTENSIONS
+
 import Index from "@/pages/Index";
 import Cart from "@/pages/Cart";
 import Checkout from "@/pages/Checkout";
+import Orders from "@/pages/Orders"; 
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import NotFound from "@/pages/NotFound";
@@ -31,10 +32,14 @@ const AnimatedRoutes = () => {
         <Route path="/" element={<Index />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
+
+        {/*  KEEP THIS (backend orders page) */}
+        <Route path="/orders" element={<Orders />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* 🔥 IMPORTANT — PRODUCT DETAILS */}
+        {/*  NEW FEATURE */}
         <Route path="/product/:id" element={<ProductDetails />} />
 
         {/* ALWAYS LAST */}
