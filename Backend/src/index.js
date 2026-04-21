@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 
 // 🔥 FORCE LOAD ENV
-dotenv.config({ path: "../.env" });
+dotenv.config();
 
 console.log("🔑 KEY_ID:", process.env.RAZORPAY_KEY_ID);
 
