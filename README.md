@@ -30,12 +30,18 @@ A scalable, production-ready full stack e-commerce platform built with React, No
 - Auth pages (Login / Register)
 - Order history page
 
+### ✅ Deployment
+- Backend Deployed on Render
+- Frontend Deployed on Vercel
+
+### Link to website
+- https://e-commerce-platform-three-kappa.vercel.app/
+
 ### 🚧 Planned
 - OAuth 2.0 (Google Login via Passport.js)
 - AI recommendation microservice (FastAPI)
 - Expanded product dataset (20+ items)
 - Dockerization (backend + frontend + MongoDB)
-- Deployment — Backend on Render, Frontend on Vercel
 
 ---
 
